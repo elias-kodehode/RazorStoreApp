@@ -16,7 +16,7 @@ public class BasketModel(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        this.Basket  = await basketService.GetOrCreateBasket();
+        this.Basket  = await basketService.GetOrCreateBasketAsync();
 
 
 
@@ -24,7 +24,7 @@ public class BasketModel(
     }
     public async Task<IActionResult> OnPostDeleteAsync()
     {
-        await basketService.DeleteBasket();
+        await basketService.DeleteBasketAsync();
         this.Basket = null;
         return Page();
     }

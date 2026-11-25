@@ -16,7 +16,7 @@ public class IndexModel(
 
     private async Task LoadProductsAsync()
     {
-        await basketService.GetOrCreateBasket();
+        await basketService.GetOrCreateBasketAsync();
         this.Products = await db.Products.ToListAsync();
     }
 
@@ -33,7 +33,7 @@ public class IndexModel(
 
     public async Task<IActionResult> OnPostAddToBasketAsync(int productId)
     {
-        await basketService.AddProduct(productId);
+        await basketService.AddProductAsync(productId);
         return RedirectToPage();
     }
 
