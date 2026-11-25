@@ -1,8 +1,5 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using RazorShoppingApp.Data;
 using RazorShoppingApp.Models;
 using RazorShoppingApp.Services;
 
@@ -16,7 +13,7 @@ public class BasketModel(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        this.Basket  = await basketService.GetOrCreateBasketAsync();
+        this.Basket = await basketService.GetBasketAsync();
 
 
 

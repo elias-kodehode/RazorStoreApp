@@ -10,9 +10,13 @@ public class BasketService(
 
     private readonly string _userId = currentUser.UserId ?? throw new UnauthorizedAccessException("User must be authenticated.");
 
-    public async Task<Basket> GetOrCreateBasketAsync()
+    private async Task<Basket> GetOrCreateBasketAsync()
     {
-        var basket = await db.Baskets.FirstOrDefaultAsync(x => x.UserId == _userId);
+        var basket = await db
+            .Baskets
+            .Include(x => x.Items)
+            .ThenInclude(x => x.Basket.Items)
+            .FirstOrDefaultAsync(x => x.UserId == _userId);
 
         if (basket is null)
         {
@@ -30,6 +34,18 @@ public class BasketService(
         return basket;
     }
 
+
+    public async Task<Basket?> GetBasketAsync()
+    {
+        var basket = await db
+            .Baskets
+            .Include(basket => basket.Items)
+            .ThenInclude((BasketItem item) => item.Product)
+            .FirstOrDefaultAsync(x => x.UserId == _userId);
+
+
+        return basket;
+    }
     public async Task DeleteBasketAsync()
     {
         var basket = await db.Baskets.FirstOrDefaultAsync(x => x.UserId == _userId);
