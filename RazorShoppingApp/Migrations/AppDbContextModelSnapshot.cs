@@ -299,6 +299,53 @@ namespace RazorShoppingApp.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("RazorShoppingApp.Models.TodoModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FinishedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Todos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2026, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "A todo list to keep track of goals and such for this application",
+                            IsCompleted = false,
+                            Title = "Add a Todo List!",
+                            UserId = "50909e80-48e2-45b1-a418-7a3a43ceb3e3"
+                        });
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -380,9 +427,22 @@ namespace RazorShoppingApp.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("RazorShoppingApp.Models.TodoModel", b =>
+                {
+                    b.HasOne("RazorShoppingApp.Data.ApplicationUser", "User")
+                        .WithMany("Todos")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RazorShoppingApp.Data.ApplicationUser", b =>
                 {
                     b.Navigation("Basket");
+
+                    b.Navigation("Todos");
                 });
 
             modelBuilder.Entity("RazorShoppingApp.Models.Basket", b =>

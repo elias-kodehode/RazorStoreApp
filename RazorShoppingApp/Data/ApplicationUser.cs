@@ -6,6 +6,7 @@ namespace RazorShoppingApp.Data;
 public class ApplicationUser : IdentityUser
 {
     public Basket? Basket { get; set; }
+    public ICollection<TodoModel> Todos { get; set; } = [];
 }
 
 
