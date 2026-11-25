@@ -1,0 +1,14 @@
+﻿@page "/Products/{id:int}"
+@model RazorShoppingApp.Pages.Products.IndexModel
+
+<div class="container w-25">
+    <div class="card">
+        <img src="~/icon.png" class="card-img-top"/>
+        <div class="card-body">
+            <h5 class="card-title">@Model.Product.Name</h5>
+            <p class="card-text">@Model.Product.Description</p>
+            <p class="card-text fs-6">@Model.Product.Price.ToString("C")</p>
+            <a class="btn btn-primary">Add To Basket</a>
+        </div>
+    </div>
+</div>

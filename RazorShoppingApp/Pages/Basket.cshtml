@@ -1,0 +1,14 @@
+﻿@page
+@model RazorShoppingApp.Pages.BasketModel
+
+
+@if(this.Model.Basket is not null)
+{
+    @foreach(var item in this.Model.Basket.Items)
+    {
+        <h1>hi?</h1>
+    }
+}
+@* <form id="clearBasket" method="post" asp-page-handler="Delete">
+    <button type="submit" class="btn btn-danger">Clear Basket</button>
+</form> *@

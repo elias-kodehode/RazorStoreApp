@@ -1,0 +1,59 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@model IndexModel
+@{
+    ViewData["Title"] = "Products";
+}
+
+
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        @foreach(var p in Model.Products)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="~/icon.png" class="card-img-top"/>
+                    <div class="card-body">
+                        <h5 class="card-title">@p.Name</h5>
+                        <p class="card-text">@p.Description</p>
+                        <p class="card-text">@p.Price.ToString("C")</p>
+
+                        <div class="d-flex gap-2 flex-nowrap">
+                            <button
+                                type="button"
+                                class="btn btn-primary flex-fill text-nowrap btn-sm"
+                                onclick="showProduct(@p.Id)">
+                                View Product
+                            </button>
+                            <form method="post" asp-page-handler="AddToBasket">
+                                <input type="hidden" name="productId" value="@p.Id"/>
+                                <button
+                                    type="submit"
+                                    class="btn btn-outline-success flex-fill text-nowrap btn-sm">
+                                    Add To Basket
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        }
+    </div>
+</div>
+
+
+
+
+<div id="product-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div id="modalBody" class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/products.js" asp-append-version="true"></script>
+}

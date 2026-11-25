@@ -1,0 +1,108 @@
+﻿@page "/Dashboard"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+@model RazorShoppingApp.Pages.DashboardModel
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model.Products)
+        {
+            <tr>
+                <td>@p.Id</td>
+                <td>@p.Name</td>
+                <td>@p.Description</td>
+                <td>@p.Price</td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a asp-page="/Dashboard/Products/Edit" asp-route-id="@p.Id" class="btn btn-primary">Edit</a>
+                    </td>
+                    <td>
+                        <form asp-page-handler="Delete" asp-route-id="@p.Id" onsubmit="return confirm('Are you sure?');">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Add New Product</h3>
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Input.Name"></label>
+        <input class="form-control" asp-for="Input.Name" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Input.Description"></label>
+        <input class="form-control" asp-for="Input.Description" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Input.Price"></label>
+        <input class="form-control" asp-for="Input.Price" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Add</button>
+</form>
+ 
+
+<br />
+
+<h3>Baskets</h3>
+
+@if(Model.Baskets.Count > 0)
+{
+    
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>User</th>
+            <th>Product Count</th>
+            @*View Basket*@
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var basket in Model.Baskets)
+        {
+            <tr>
+                <td>@basket.Id</td>
+                <td>@basket.UserId</td>
+                <td>@basket.Items.Count</td>
+                <td>
+                    <a asp-page="/Dashboard/Baskets/Index" asp-route-id="@basket.Id" class="btn btn-primary">View</a>
+                </td>
+                <td>
+                    <form asp-page-handler="DeleteBasket" asp-route-id="@basket.Id" onsubmit="return confirm('Are you sure?');">
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+else
+{
+    <p>No Baskets</p>
+}
+<form method="post" asp-page-handler="DeleteBaskets">
+    <button type="submit" class="btn btn-danger" onsubmit="return confirm ('Are you sure?')">Delete Baskets</button>
+</form>
+
+
