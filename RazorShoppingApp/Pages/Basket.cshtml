@@ -1,14 +1,48 @@
 ﻿@page
 @model RazorShoppingApp.Pages.BasketModel
 
+<h1>Basket</h1>
 
-@if(this.Model.Basket is not null)
-{
-    @foreach(var item in this.Model.Basket.Items)
-    {
-        <h1>hi?</h1>
-    }
-}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (this.Model.Basket is not null)
+        {
+            @foreach (var basketItem in this.Model.Basket.Items)
+            {
+                <tr>
+                    <td>@basketItem.Product.Name</td>
+                    <td>
+                        <form method="post"  asp-page-handler="UpdateQuantity">
+                            <input type="number" name="quantity" value="@basketItem.Quantity" min="1"/>
+                            <input type="hidden" name="basketItemId" value="@basketItem.Id"/>
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                        </form>
+                    </td>
+                    @* <td>
+                        <form method="post" asp-page-handler="DeleteItem">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                        </form>
+                    </td> *@
+                    <td>
+                        <form method="post" asp-page-handler="DeleteBasketItem" asp-route-id="@basketItem.Id">
+                            <button type="submit" class="btn btn-danger btn-sm">Remove All</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
 @* <form id="clearBasket" method="post" asp-page-handler="Delete">
     <button type="submit" class="btn btn-danger">Clear Basket</button>
 </form> *@

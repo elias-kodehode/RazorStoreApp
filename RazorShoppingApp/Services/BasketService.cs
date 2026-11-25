@@ -84,4 +84,35 @@ public class BasketService(
         }
         await db.SaveChangesAsync();
     }
+
+    public async Task UpdateQuantityAsync(int basketItemId, int quantity)
+    {
+        if (quantity <= 0)
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than or equal to 1");
+
+
+        var basketItem = await GetBasketItemAsync(basketItemId) ?? throw new KeyNotFoundException("Basket item not found.");
+
+
+        basketItem.Quantity = quantity;
+        await db.SaveChangesAsync();
+
+
+    }
+
+    private Task<BasketItem?> GetBasketItemAsync(int basketItemId)
+    {
+        return db
+            .BasketItems
+            .FirstOrDefaultAsync(item => item.Id == basketItemId && item.Basket.UserId == _userId);
+    }
+
+    public async Task DeleteBasketItemAsync(int basketItemId)
+    {
+        var basketItem = await GetBasketItemAsync(basketItemId)
+                ?? throw new KeyNotFoundException("Basket item not found.");
+
+        db.BasketItems.Remove(basketItem);
+        await db.SaveChangesAsync();
+    }
 }

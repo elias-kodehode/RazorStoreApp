@@ -16,7 +16,6 @@ public class IndexModel(
 
     private async Task LoadProductsAsync()
     {
-        await basketService.GetOrCreateBasketAsync();
         this.Products = await db.Products.ToListAsync();
     }
 

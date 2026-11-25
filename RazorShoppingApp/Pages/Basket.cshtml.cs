@@ -15,8 +15,6 @@ public class BasketModel(
     {
         this.Basket = await basketService.GetBasketAsync();
 
-
-
         return Page();
     }
     public async Task<IActionResult> OnPostDeleteAsync()
@@ -24,5 +22,17 @@ public class BasketModel(
         await basketService.DeleteBasketAsync();
         this.Basket = null;
         return Page();
+    }
+
+    public async Task<IActionResult> OnPostUpdateQuantityAsync(int basketItemId, int quantity)
+    {
+        await basketService.UpdateQuantityAsync(basketItemId, quantity);
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostDeleteBasketItemAsync(int id)
+    {
+        await basketService.DeleteBasketItemAsync(id);
+        return RedirectToPage();
     }
 }
