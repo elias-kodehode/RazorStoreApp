@@ -21,7 +21,7 @@ public class DashboardModel(AppDbContext db) : PageModel
     private async Task LoadProductsAsync()
     {
         this.Products = await db.Products.ToListAsync();
-        this.Baskets = await db.Baskets.ToListAsync();
+        this.Baskets = await db.Baskets.Include(basket => basket.Items).ToListAsync();
     }
 
 

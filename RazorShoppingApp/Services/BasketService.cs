@@ -96,8 +96,6 @@ public class BasketService(
 
         basketItem.Quantity = quantity;
         await db.SaveChangesAsync();
-
-
     }
 
     private Task<BasketItem?> GetBasketItemAsync(int basketItemId)
@@ -114,5 +112,12 @@ public class BasketService(
 
         db.BasketItems.Remove(basketItem);
         await db.SaveChangesAsync();
+    }
+
+
+    public Task<decimal> CalculatePrice()
+    {
+        //TODO
+        throw new Exception();
     }
 }

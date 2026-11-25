@@ -1,9 +1,11 @@
 ﻿@page
 @model RazorShoppingApp.Pages.BasketModel
-
+@{
+    ViewData["Title"] = "Basket";
+}
 <h1>Basket</h1>
 
-<table class="table">
+<table class="table table-sm align-middle w-auto">
     <thead>
         <tr>
             <th>Product</th>
@@ -21,17 +23,12 @@
                 <tr>
                     <td>@basketItem.Product.Name</td>
                     <td>
-                        <form method="post"  asp-page-handler="UpdateQuantity">
-                            <input type="number" name="quantity" value="@basketItem.Quantity" min="1"/>
+                        <form method="post" class="d-flex align-items-center gap-2"  asp-page-handler="UpdateQuantity">
+                            <input type="number" class="form-control form-control-sm" name="quantity" value="@basketItem.Quantity" min="1"/>
                             <input type="hidden" name="basketItemId" value="@basketItem.Id"/>
                             <button type="submit" class="btn btn-primary btn-sm">Update</button>
                         </form>
                     </td>
-                    @* <td>
-                        <form method="post" asp-page-handler="DeleteItem">
-                            <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
-                        </form>
-                    </td> *@
                     <td>
                         <form method="post" asp-page-handler="DeleteBasketItem" asp-route-id="@basketItem.Id">
                             <button type="submit" class="btn btn-danger btn-sm">Remove All</button>
