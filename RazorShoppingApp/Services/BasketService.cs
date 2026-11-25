@@ -14,8 +14,6 @@ public class BasketService(
     {
         var basket = await db
             .Baskets
-            .Include(x => x.Items)
-            .ThenInclude(x => x.Basket.Items)
             .FirstOrDefaultAsync(x => x.UserId == _userId);
 
         if (basket is null)
