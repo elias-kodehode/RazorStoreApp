@@ -17,6 +17,7 @@ public class BasketModel(
 
         return Page();
     }
+
     public async Task<IActionResult> OnPostDeleteAsync()
     {
         await basketService.DeleteBasketAsync();
@@ -33,6 +34,20 @@ public class BasketModel(
     public async Task<IActionResult> OnPostDeleteBasketItemAsync(int id)
     {
         await basketService.DeleteBasketItemAsync(id);
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostPlaceOrder()
+    {
+        var basket = await basketService.GetBasketAsync();
+
+        if (basket is null)
+        {
+            return RedirectToPage();
+        }
+
+
+
         return RedirectToPage();
     }
 }

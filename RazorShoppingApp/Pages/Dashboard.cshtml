@@ -65,37 +65,40 @@
 
 @if(Model.Baskets.Count > 0)
 {
-    
-<table class="table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>User</th>
-            <th>Product Count</th>
-            @*View Basket*@
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach(var basket in Model.Baskets)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>@basket.Id</td>
-                <td>@basket.UserId</td>
-                <td>@basket.Items.Count</td>
-                <td>
-                    <a asp-page="/Dashboard/Baskets/Index" asp-route-id="@basket.Id" class="btn btn-primary">View</a>
-                </td>
-                <td>
-                    <form asp-page-handler="DeleteBasket" asp-route-id="@basket.Id" onsubmit="return confirm('Are you sure?');">
-                        <button class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
+                <th>Id</th>
+                <th>User</th>
+                <th>Created</th>
+                <th>Expires</th>
+                <th>Product Count</th>
+                @*View Basket*@
+                <th></th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach(var basket in Model.Baskets)
+            {
+                <tr>
+                    <td>@basket.Id</td>
+                    <td>@basket.UserId</td>
+                    <td>@basket.CreatedAt</td>
+                    <td>@basket.ExpiresAt</td>
+                    <td>@basket.Items.Count</td>
+                    <td>
+                        <a asp-page="/Dashboard/Baskets/Index" asp-route-id="@basket.Id" class="btn btn-primary">View</a>
+                    </td>
+                    <td>
+                        <form asp-page-handler="DeleteBasket" asp-route-id="@basket.Id" onsubmit="return confirm('Are you sure?');">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 else
 {

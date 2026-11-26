@@ -5,7 +5,7 @@ namespace RazorShoppingApp.Services;
 
 public class BasketService(
     AppDbContext db,
-    ICurrentUserService currentUser)
+    ICurrentUser currentUser)
 {
 
     private readonly string _userId = currentUser.UserId ?? throw new UnauthorizedAccessException("User must be authenticated.");

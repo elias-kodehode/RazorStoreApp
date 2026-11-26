@@ -1,12 +1,22 @@
-﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-
+﻿@using RazorShoppingApp.Services
+@inject ICurrentUser CurrentUser
 
 
 <ul class="navbar-nav gap-3">
-@if (SignInManager.IsSignedIn(User))
+@if (CurrentUser.IsAuthenticated)
 {
+
+    var user = await CurrentUser.GetUserAsync();
+    
+        if(user is not null)
+        {
+            <li class="nav-item">
+                <div class="nav-link">
+                    @user.Credit.ToString("C")
+                </div>
+            </li>
+        }
+
     <li class="nav-item">
             <a asp-page="/Basket" class="nav-link">
             <i class="bi bi-cart3"></i>
@@ -18,12 +28,6 @@
             <li class="nav-item">
                 <a class="nav-link" asp-page="/Dashboard">
                     <i class="bi bi-gear-fill"></i>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" asp-page="/Todos">
-                    <i class="bi bi-pencil-square"></i>
                 </a>
             </li>
         }

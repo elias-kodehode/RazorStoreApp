@@ -36,13 +36,12 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddScoped<BasketService>();
-builder.Services.AddScoped<TodoService>();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 builder.Services.AddMemoryCache();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-//builder.Services.AddHostedService<BasketCleanerService>();
+builder.Services.AddHostedService<BasketCleanerService>();
 
 builder.Services.AddRazorPages();
 
