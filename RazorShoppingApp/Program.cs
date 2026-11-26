@@ -41,7 +41,7 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddMemoryCache();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddHostedService<BasketCleanerService>();
+//builder.Services.AddHostedService<BasketCleanerService>();
 
 builder.Services.AddRazorPages();
 
