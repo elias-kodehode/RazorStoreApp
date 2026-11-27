@@ -61,17 +61,17 @@ public class DashboardModel(AppDbContext db) : PageModel
     }
 
 
-    public async Task<IActionResult> OnPostDeleteBasketAsync(int id)
-    {
-        var basket = await db.Baskets.FindAsync(id);
+    //public async Task<IActionResult> OnPostDeleteBasketAsync(int id)
+    //{
+    //    var basket = await db.Baskets.FindAsync(id);
 
-        if (basket is null)
-            return NotFound();
+    //    if (basket is null)
+    //        return NotFound();
 
-        db.Remove(basket);
-        await db.SaveChangesAsync();
-        return RedirectToPage();
-    }
+    //    db.Remove(basket);
+    //    await db.SaveChangesAsync();
+    //    return RedirectToPage();
+    //}
     public async Task<IActionResult> OnPostDeleteBasketsAsync()
     {
         var deleted = await db.Baskets.ExecuteDeleteAsync();

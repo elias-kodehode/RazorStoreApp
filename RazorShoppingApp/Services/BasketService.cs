@@ -7,7 +7,7 @@ public class BasketService(
     AppDbContext db,
     ICurrentUser currentUser)
 {
-
+    private static readonly TimeSpan BasketLifetime = TimeSpan.FromDays(5);
     private readonly string _userId = currentUser.UserId ?? throw new UnauthorizedAccessException("User must be authenticated.");
 
 
@@ -41,19 +41,13 @@ public class BasketService(
     }
 
 
-    public async Task<Basket?> GetBasketAsync()
+    public Task<Basket?> GetBasketAsync()
     {
-        var basket = await db
+        return db
             .Baskets
             .Include(basket => basket.Items)
             .ThenInclude((BasketItem item) => item.Product)
-            .FirstOrDefaultAsync(x => x.UserId == _userId);
-
-
-        if (basket?.ExpiresAt <= DateTime.UtcNow)
-            return await GetOrCreateBasketAsync();
-
-        return basket;
+            .FirstOrDefaultAsync(basket => basket.UserId == _userId && basket.ExpiresAt > DateTime.UtcNow);
     }
 
 
@@ -97,6 +91,8 @@ public class BasketService(
 
             db.BasketItems.Add(basketItem);
         }
+
+        RefreshExpiration(basket);
         await db.SaveChangesAsync();
     }
 
@@ -110,14 +106,27 @@ public class BasketService(
 
 
         basketItem.Quantity = quantity;
+
+
+        RefreshExpiration(basketItem.Basket);
+
         await db.SaveChangesAsync();
+    }
+
+    private static void RefreshExpiration(Basket basket)
+    {
+        basket.ExpiresAt = DateTime.UtcNow.Add(BasketLifetime);
     }
 
     private Task<BasketItem?> GetBasketItemAsync(int basketItemId)
     {
         return db
             .BasketItems
-            .FirstOrDefaultAsync(item => item.Id == basketItemId && item.Basket.UserId == _userId);
+            .Include(item => item.Basket)
+            .FirstOrDefaultAsync(item =>
+                item.Id == basketItemId &&
+                item.Basket.UserId == _userId &&
+                item.Basket.ExpiresAt > DateTime.UtcNow);
     }
 
     public async Task DeleteBasketItemAsync(int basketItemId)
