@@ -18,12 +18,12 @@ public class BasketModel(
         return Page();
     }
 
-    public async Task<IActionResult> OnPostDeleteAsync()
-    {
-        await basketService.DeleteBasketAsync();
-        this.Basket = null;
-        return Page();
-    }
+    //public async Task<IActionResult> OnPostDeleteAsync()
+    //{
+    //    await basketService.DeleteBasketAsync();
+    //    this.Basket = null;
+    //    return Page();
+    //}
 
     public async Task<IActionResult> OnPostUpdateQuantityAsync(int basketItemId, int quantity)
     {

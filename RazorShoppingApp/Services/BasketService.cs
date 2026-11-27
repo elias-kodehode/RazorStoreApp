@@ -10,25 +10,33 @@ public class BasketService(
 
     private readonly string _userId = currentUser.UserId ?? throw new UnauthorizedAccessException("User must be authenticated.");
 
+
     private async Task<Basket> GetOrCreateBasketAsync()
     {
         var basket = await db
             .Baskets
+            .Include(basket => basket.Items)
             .FirstOrDefaultAsync(x => x.UserId == _userId);
+
+        var now = DateTime.UtcNow;
+
+        //return early if a basket exists and it has not expired
+        if (basket is not null && basket.ExpiresAt > now)
+            return basket;
 
         if (basket is null)
         {
             basket = new Basket
             {
-                CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(5),
                 UserId = _userId,
             };
-
             db.Baskets.Add(basket);
-            await db.SaveChangesAsync();
         }
 
+        basket.ExpiresAt = now.AddMinutes(5);
+        basket.Items.Clear();
+        basket.CreatedAt = now;
+        await db.SaveChangesAsync();
         return basket;
     }
 
@@ -42,18 +50,23 @@ public class BasketService(
             .FirstOrDefaultAsync(x => x.UserId == _userId);
 
 
+        if (basket?.ExpiresAt <= DateTime.UtcNow)
+            return await GetOrCreateBasketAsync();
+
         return basket;
     }
-    public async Task DeleteBasketAsync()
-    {
-        var basket = await db.Baskets.FirstOrDefaultAsync(x => x.UserId == _userId);
 
-        if (basket is null)
-            return;
 
-        db.Baskets.Remove(basket);
-        await db.SaveChangesAsync();
-    }
+    //public async Task DeleteBasketAsync()
+    //{
+    //    var basket = await db.Baskets.FirstOrDefaultAsync(x => x.UserId == _userId);
+
+    //    if (basket is null)
+    //        return;
+
+    //    db.Baskets.Remove(basket);
+    //    await db.SaveChangesAsync();
+    //}
 
     public async Task AddProductAsync(int productId, int quantity = 1)
     {
@@ -66,6 +79,8 @@ public class BasketService(
             throw new KeyNotFoundException("Product not found.");
 
         var basket = await GetOrCreateBasketAsync();
+
+
 
         var basketItem = await db.BasketItems.FirstOrDefaultAsync(x => x.BasketId == basket.Id && x.ProductId == productId);
 
@@ -114,10 +129,4 @@ public class BasketService(
         await db.SaveChangesAsync();
     }
 
-
-    public Task<decimal> CalculatePrice()
-    {
-        //TODO
-        throw new Exception();
-    }
 }

@@ -1,5 +1,4 @@
 ﻿using RazorShoppingApp.Models;
-using System.Security.Authentication;
 
 namespace RazorShoppingApp.Services;
 
@@ -8,34 +7,49 @@ public class OrderService(
     BasketService basketService,
     ICurrentUser currentUser)
 {
-    public async Task CheckoutAsync()
+    public async Task<Order> CheckoutAsync()
     {
-        if (!currentUser.IsAuthenticated) throw new AuthenticationException();
+        if (!currentUser.IsAuthenticated) throw new UnauthorizedAccessException();
 
-        var basket = await basketService.GetBasketAsync();
+        var basket = await basketService.GetBasketAsync() ?? throw new KeyNotFoundException("Basket not found");
 
-        if (basket is null) throw new();
+        if (basket.Items.Count == 0) throw new InvalidOperationException("basket is empty");
 
-        if (basket.Items.Count == 0) throw new();
+        //var now = DateTime.UtcNow;
 
-        var now = DateTime.UtcNow;
-        if (basket.ExpiresAt < now)
+        //if (basket.ExpiresAt <= now)
+        //{
+        //    await basketService.DeleteBasketAsync();
+        //    throw new InvalidOperationException("Basket has expired");
+        //}
+
+        var user = await currentUser.GetUserAsync() ?? throw new KeyNotFoundException("User not found");
+        var totalPrice = basket.CalculateTotal();
+
+        if (user.Credit < totalPrice)
+            throw new InvalidOperationException("Not enough credit");
+
+
+        List<OrderItem> items = [.. basket.Items.Select(item => new OrderItem
         {
-            await basketService.DeleteBasketAsync();
-            return;
-        }
-
-        var user = await currentUser.GetUserAsync() ?? throw new();
-
-
-        if (user.Credit < basket.CalculateTotal())
-            return;
+            ProductName = item.Product.Name,
+            ProductId = item.ProductId,
+            Quantity = item.Quantity,
+            UnitPrice = item.Product.Price,
+        })];
 
         var order = new Order
         {
-            Items = basket.Items.Select(item => new OrderItem
-            {
+            Items = items,
+            UserId = user.Id,
+        };
 
-            });
-        }
+        db.Orders.Add(order);
+        db.Baskets.Remove(basket);
+        user.Credit -= totalPrice;
+
+
+        await db.SaveChangesAsync();
+        return order;
+    }
 }
